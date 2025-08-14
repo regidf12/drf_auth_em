@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<h2>Профиль</h2>
+<p>Имя: {{ user.first_name }}</p>
+<p>Фамилия: {{ user.last_name }}</p>
+<p>Отчество: {{ user.patronymic }}</p>
+<p>Email: {{ user.email }}</p>
+<a href="/update">Редактировать</a> |
+<a href="/delete">Удалить аккаунт</a>
+{% endblock %}

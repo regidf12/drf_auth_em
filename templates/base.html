@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Система аутентификации{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<body>
+<header>
+    <h1>Система аутентификации</h1>
+    <nav>
+        {% if request.user.is_authenticated %}
+        <a href="/profile">Профиль</a>
+        <a href="/sor/source">MOC</a>
+        <a href="/logout">Выход</a>
+        {% else %}
+        <a href="/">Регистрация</a>
+        <a href="/login">Вход</a>
+        {% endif %}
+    </nav>
+</header>
+<main>
+    {% block content %}{% endblock %}
+</main>
+<footer>
+    <a href="https://github.com/regidf12/drf_auth_em"><p>© 2025 regidf12</p></a>
+</footer>
+</body>
+</html>

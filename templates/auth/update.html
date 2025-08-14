@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Редактирование профиля{% endblock %}
+{% block content %}
+<h2>Редактирование профиля</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Имя: <input type="text" name="first_name" value="{{ user.first_name }}" required></label>
+    <label>Фамилия: <input type="text" name="last_name" value="{{ user.last_name }}" required></label>
+    <label>Отчество: <input type="text" name="patronymic" value="{{ user.patronymic }}" required></label>
+    <label>Email: <input type="email" name="email" value="{{ user.email }}" required></label>
+    <button type="submit">Сохранить</button>
+    <a href="/profile">Отмена</a>
+</form>
+{% endblock %}

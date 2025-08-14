@@ -11,6 +11,7 @@ def register_view(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
+        patronymic = request.POST.get("patronymic")
         email = request.POST.get("email")
         password = request.POST.get("password")
         password2 = request.POST.get("password2")
@@ -27,6 +28,7 @@ def register_view(request):
             email=email,
             first_name=first_name,
             last_name=last_name,
+            patronymic=patronymic,
             password=password
         )
         messages.success(request, "Регистрация успешна! Теперь войдите.")
@@ -60,6 +62,7 @@ def update_profile_view(request):
     if request.method == "POST":
         request.user.first_name = request.POST.get("first_name")
         request.user.last_name = request.POST.get("last_name")
+        request.user.patronymic = request.POST.get("patronymic")
         request.user.email = request.POST.get("email")
         request.user.save()
         messages.success(request, "Данные обновлены")
