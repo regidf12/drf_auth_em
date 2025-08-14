@@ -1,17 +1,19 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accounts.permissions import HasAccess
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseForbidden
+from django.shortcuts import render
+from django.views.generic import TemplateView
 
 ARTICLES = [
-    {"id": 1, "title": "Hello RBAC", "author": "system"},
-    {"id": 2, "title": "Custom JWT done right", "author": "system"},
+    {"id": 1, "title": "Hello world!", "author": "system"},
+    {"id": 2, "title": "Think differently", "author": "system"},
 ]
 
 
-class ArticleListView(APIView):
+@method_decorator(login_required, name='dispatch')
+class MOCListView(APIView):
     permission_classes = [HasAccess]
     access_resource = "articles"
     access_action = "read"
@@ -20,7 +22,8 @@ class ArticleListView(APIView):
         return Response(ARTICLES)
 
 
-class ArticleCreateView(APIView):
+@method_decorator(login_required, name='dispatch')
+class MOCCreateView(APIView):
     permission_classes = [HasAccess]
     access_resource = "articles"
     access_action = "write"
@@ -28,39 +31,36 @@ class ArticleCreateView(APIView):
     def post(self, request):
         new_id = max([a["id"] for a in ARTICLES] + [0]) + 1
         title = request.data.get("title", "Untitled")
-        article = {"id": new_id, "title": title, "author": str(request.user.email)}
+        article = {
+            "id": new_id,
+            "title": title,
+            "author": str(request.user.email)
+        }
         ARTICLES.append(article)
         return Response(article, status=201)
 
 
-@login_required
-def user_data_view(request):
-    if not request.user.has_perm('auth_app.view_userdata'):
-        return render(request, "auth/403.html")
+class MOCListTemplateView(TemplateView):
+    template_name = "auth/mocs.html"
+    permission_classes = [HasAccess]
+    access_resource = "articles"
+    access_action = "read"
 
-    return JsonResponse({
-        "username": request.user.username,
-        "email": request.user.email
-    })
-
-
-@login_required
-def edit_resource_view(request):
-    if not request.user.has_perm('auth_app.change_resource'):
-        return render(request, "auth/403.html")
-
-    return JsonResponse({
-        "status": "ok",
-        "message": "Вы успешно изменили ресурс"
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["articles"] = ARTICLES
+        return context
 
 
-@login_required
-def admin_only_view(request):
-    if not request.user.is_staff:
-        return render(request, "auth/403.html")
+class MOCaddListTemplateView(TemplateView):
+    template_name = "auth/mocs_add.html"
 
-    return JsonResponse({
-        "status": "ok",
-        "message": "Добро пожаловать, админ!"
-    })
+    def post(self, request):
+        title = request.data.get("title", "Untitled")
+        new_id = max([a["id"] for a in ARTICLES] + [0]) + 1
+        article = {
+            "id": new_id,
+            "title": title,
+            "author": str(request.user.email) if request.user.is_authenticated else "anonymous"
+        }
+        ARTICLES.append(article)

@@ -11,7 +11,8 @@
     <nav>
         {% if request.user.is_authenticated %}
         <a href="/profile">Профиль</a>
-        <a href="/sor/source">MOC</a>
+        <a href="/sor/moc">Данные</a>
+        <a href="/sor/moc_add">Додавить</a>
         <a href="/logout">Выход</a>
         {% else %}
         <a href="/">Регистрация</a>
