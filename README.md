@@ -1,4 +1,4 @@
-# DRF AuthN/AuthZ
+# DRF AuthN/AuthZ with HTML
 
 **Стек:** Django REST Framework + Postgres, PyJWT.
 
