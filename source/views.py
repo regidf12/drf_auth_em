@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accounts.permissions import HasAccess
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 ARTICLES = [
@@ -53,10 +53,13 @@ class MOCListTemplateView(TemplateView):
 
 
 class MOCaddListTemplateView(TemplateView):
+    permission_classes = [HasAccess]
+    access_resource = "articles"
+    access_action = "write"
     template_name = "auth/mocs_add.html"
 
     def post(self, request):
-        title = request.data.get("title", "Untitled")
+        title = request.POST.get("title", "Untitled")
         new_id = max([a["id"] for a in ARTICLES] + [0]) + 1
         article = {
             "id": new_id,
@@ -64,3 +67,4 @@ class MOCaddListTemplateView(TemplateView):
             "author": str(request.user.email) if request.user.is_authenticated else "anonymous"
         }
         ARTICLES.append(article)
+        return redirect("/sor/moc")

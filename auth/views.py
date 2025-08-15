@@ -88,8 +88,8 @@ def logout_view(request):
 
 
 def error_401_view(request, exception=None):
-    return render(request, "errors/401.html", status=401)
+    return render(request, "error/401.html", status=401)
 
 
 def error_403_view(request, exception=None):
-    return render(request, "errors/403.html", status=403)
+    return render(request, "error/403.html", status=403)

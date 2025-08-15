@@ -1,5 +1,4 @@
-
-# DRF AuthN/AuthZ with HTML
+# DRF AuthN/AuthZ
 
 **Стек:** Django REST Framework + Postgres, PyJWT.
 
@@ -18,9 +17,10 @@ python manage.py runserver
 ## Схема БД
 
 - **accounts_user** — кастомный пользователь (email-логин, soft-delete).
-  - `id` (UUID), `email` (unique), `first_name`, `last_name`, `patronymic` (nullable), `is_active`, `is_staff`, `is_superuser`,
-  - `token_version` (int) — инкремент для глобального logout,
-  - `deleted_at` (nullable).
+    - `id` (UUID), `email` (unique), `first_name`, `last_name`, `patronymic` (
+      nullable), `is_active`, `is_staff`, `is_superuser`,
+    - `token_version` (int) — инкремент для глобального logout,
+    - `deleted_at` (nullable).
 - **accounts_role** — роли (например, admin, editor, viewer).
 - **accounts_permission** — разрешение = (`resource`, `action`, `effect`)
 - **accounts_rolepermission** — M2M: роль - разрешение.
@@ -32,8 +32,8 @@ python manage.py runserver
 
 - Request маппится на пару (**resource**, **action**). Пример: `("articles", "read")`, `("articles", "write")`.
 - Пользователь **имеет доступ**, если **хотя бы одно** правило из объединения его ролей дает `ALLOW`:
-  - Точное совпадение ресурса и действия, либо совпадение по wildcard: ресурс `*` или действие `*`.
-  - DENY (если бы использовали, переопределяет allow; в демо мы создаем только ALLOW).
+    - Точное совпадение ресурса и действия, либо совпадение по wildcard: ресурс `*` или действие `*`.
+    - DENY (если бы использовали, переопределяет allow; в демо мы создаем только ALLOW).
 - Если пользователь не аутентифицирован → 401. Аутентифицирован, но не имеет доступа → 403.
 
 ## JWT
@@ -47,6 +47,7 @@ python manage.py runserver
 ## Эндпоинты
 
 Аутентификация:
+
 - `POST /auth/register` — регистрация.
 - `POST /auth/login` — логин по email/паролю, выдает access/refresh.
 - `POST /auth/refresh` — обновить пару токенов (rotation).
@@ -57,11 +58,13 @@ python manage.py runserver
 - `DELETE /me` — мягкое удаление (is_active=False).
 
 Админка ACL (только для роли `admin`):
+
 - `GET/POST /admin/roles`
 - `GET/POST /admin/permissions`
 - `POST /admin/roles/{role_id}/attach_permission/{perm_id}`
 - `POST /admin/users/{user_id}/attach_role/{role_id}`
 
 Бизнес-ресурсы (mock):
+
 - `GET /resources/articles` — нужна permission `("articles", "read")`
 - `POST /resources/articles` — нужна `("articles", "write")`
